@@ -23,7 +23,7 @@ create table if not exists public.profiles (
 );
 
 -- Crea el perfil automáticamente al registrarse un usuario (rol 'user' por defecto).
-create or replace function public.handle_new_user()
+create or replace function public.gdi_handle_new_user()
 returns trigger
 language plpgsql
 security definer set search_path = public
@@ -36,10 +36,17 @@ begin
 end;
 $$;
 
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
+drop trigger if exists gdi_on_auth_user_created on auth.users;
+create trigger gdi_on_auth_user_created
   after insert on auth.users
-  for each row execute function public.handle_new_user();
+  for each row execute function public.gdi_handle_new_user();
+
+-- Perfiles para los usuarios que ya existían antes de ejecutar este script.
+insert into public.profiles (id, email, full_name)
+select id, email, coalesce(raw_user_meta_data ->> 'full_name', '')
+  from auth.users
+ where email is not null
+on conflict (id) do nothing;
 
 -- ¿El usuario autenticado es administrador? (se usa en las políticas RLS)
 create or replace function public.is_admin()
