@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Gestión DI</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="auth-wrapper">
+    <ion-card class="auth-card">
+      <ion-card-content>
+        <h1>Iniciar sesión</h1>
+        <p class="subtitle">Accede al sistema de gestión de inventario.</p>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate aria-describedby="login-error">
+          <ion-input
+            formControlName="email"
+            type="email"
+            label="Correo electrónico"
+            labelPlacement="floating"
+            fill="outline"
+            autocomplete="email"
+            inputmode="email"
+            [required]="true"
+            errorText="Introduce un correo electrónico válido."
+          ></ion-input>
+
+          <ion-input
+            formControlName="password"
+            type="password"
+            label="Contraseña"
+            labelPlacement="floating"
+            fill="outline"
+            autocomplete="current-password"
+            [required]="true"
+            errorText="La contraseña es obligatoria (mínimo 6 caracteres)."
+          >
+            <ion-input-password-toggle slot="end" showLabel="Mostrar contraseña" hideLabel="Ocultar contraseña"></ion-input-password-toggle>
+          </ion-input>
+
+          <ion-checkbox
+            [(ngModel)]="rememberEmail"
+            [ngModelOptions]="{ standalone: true }"
+            labelPlacement="end"
+            justify="start"
+          >Recordar mi correo en este dispositivo</ion-checkbox>
+
+          <div id="login-error" aria-live="assertive">
+            @if (errorMessage(); as message) {
+              <ion-text color="danger"><p class="form-error" role="alert">{{ message }}</p></ion-text>
+            }
+          </div>
+
+          <ion-button type="submit" expand="block" [disabled]="loading()">
+            @if (loading()) {
+              <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+              <span class="ion-padding-start">Entrando…</span>
+            } @else {
+              Entrar
+            }
+          </ion-button>
+        </form>
+
+        <p class="auth-switch">
+          ¿No tienes cuenta? <a routerLink="/registro">Crear una cuenta</a>
+        </p>
+        <p class="auth-switch">
+          <a routerLink="/ayuda">Ayuda y manual de usuario</a>
+        </p>
+      </ion-card-content>
+    </ion-card>
+  </main>
+</ion-content>

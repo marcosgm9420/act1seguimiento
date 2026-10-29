@@ -1,33 +1,56 @@
+<a class="skip-link" href="#main-content" (click)="skipToContent($event)">Saltar al contenido principal</a>
+
 <ion-app>
-  <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+  @if (!configured) {
+    <div class="config-warning" role="alert">
+      <ion-icon name="warning-outline" aria-hidden="true"></ion-icon>
+      Falta configurar Supabase (SUPABASE_URL y SUPABASE_ANON_KEY). Consulta el README.
+    </div>
+  }
+
+  <ion-split-pane contentId="main-content" [disabled]="!auth.isAuthenticated()">
+    <ion-menu contentId="main-content" type="overlay" [disabled]="!auth.isAuthenticated()">
       <ion-content>
-        <ion-list id="inbox-list">
-          <ion-list-header>Inbox</ion-list-header>
-          <ion-note>hi&#64;ionicframework.com</ion-note>
+        <nav aria-label="Menú principal">
+          <ion-list id="main-menu" lines="none">
+            <ion-list-header>
+              <h1 class="brand">Gestión DI</h1>
+            </ion-list-header>
+            @if (auth.profile(); as profile) {
+              <ion-note class="user-info">
+                <span>{{ profile.fullName || profile.email }}</span>
+                <ion-badge [color]="auth.isAdmin() ? 'primary' : 'medium'">
+                  {{ auth.isAdmin() ? 'Administrador' : 'Usuario estándar' }}
+                </ion-badge>
+              </ion-note>
+            }
 
-          @for (p of appPages; track p; let i = $index) {
-            <ion-menu-toggle auto-hide="false">
-              <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-                <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-                <ion-label>{{ p.title }}</ion-label>
-              </ion-item>
-            </ion-menu-toggle>
-          }
-        </ion-list>
-
-        <ion-list id="labels-list">
-          <ion-list-header>Labels</ion-list-header>
-
-          @for (label of labels; track label) {
-            <ion-item lines="none">
-              <ion-icon aria-hidden="true" slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
-              <ion-label>{{ label }}</ion-label>
-            </ion-item>
-          }
-        </ion-list>
+            @for (entry of menu(); track entry.url) {
+              <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                  routerDirection="root"
+                  [routerLink]="entry.url"
+                  detail="false"
+                  routerLinkActive="selected"
+                  #rla="routerLinkActive"
+                  [attr.aria-current]="rla.isActive ? 'page' : null"
+                >
+                  <ion-icon aria-hidden="true" slot="start" [ios]="entry.icon + '-outline'" [md]="entry.icon + '-sharp'"></ion-icon>
+                  <ion-label>{{ entry.title }}</ion-label>
+                </ion-item>
+              </ion-menu-toggle>
+            }
+          </ion-list>
+        </nav>
       </ion-content>
+      <ion-footer class="ion-padding">
+        <ion-button expand="block" fill="outline" color="dark" (click)="logout()">
+          <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
+          Cerrar sesión
+        </ion-button>
+      </ion-footer>
     </ion-menu>
+
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
 </ion-app>
