@@ -1,15 +1,21 @@
 {
   "name": "gestion-di",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Marcos Gomez",
   "scripts": {
-    "ng": "ng",
+    "set-env": "node scripts/set-env.mjs",
+    "prestart": "npm run set-env",
     "start": "ng serve",
+    "prebuild": "npm run set-env",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "pretest": "npm run set-env",
     "test": "ng test",
-    "lint": "ng lint"
+    "test:ci": "npm run set-env && ng test --watch=false",
+    "lint": "ng lint",
+    "docs": "compodoc -p tsconfig.doc.json -d docs/tecnica -n \"Gestión DI - Documentación técnica\" --language es-ES --hideGenerator",
+    "docs:serve": "compodoc -p tsconfig.doc.json -s",
+    "vercel-build": "npm run test:ci && npm run build"
   },
   "private": true,
   "dependencies": {
@@ -25,7 +31,11 @@
     "@capacitor/keyboard": "8.0.6",
     "@capacitor/status-bar": "8.0.4",
     "@ionic/angular": "^9.0.0",
+    "@supabase/supabase-js": "^2.118.0",
+    "chart.js": "^4.6.1",
     "ionicons": "^8.1.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.9",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -35,6 +45,7 @@
     "@angular/compiler-cli": "22.2.3",
     "@angular/language-service": "22.2.3",
     "@capacitor/cli": "8.5.3",
+    "@compodoc/compodoc": "^2.0.0",
     "@ionic/angular-toolkit": "^13.0.0",
     "angular-eslint": "22.6.0",
     "eslint": "^10.10.0",
@@ -43,5 +54,5 @@
     "typescript-eslint": "^8.61.0",
     "vitest": "~5.0.5"
   },
-  "description": "An Ionic project"
+  "description": "Gestión DI: sistema de gestión de inventario multiplataforma (Ionic + Angular + Supabase)"
 }
