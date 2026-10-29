@@ -1,0 +1,61 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.form-card {
+  margin: 0;
+}
+
+ion-card-title h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feed h2 {
+  margin: 0 0 8px;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.live.on {
+  color: var(--ion-color-success-shade);
+}
+
+ion-item h3 {
+  font-weight: 600;
+}
+
+.type-entrada {
+  color: var(--ion-color-success-shade);
+}
+
+.type-salida {
+  color: var(--ion-color-danger-shade);
+}
+
+.type-nota {
+  color: var(--ion-color-primary-shade);
+}
+
+@media (min-width: 992px) {
+  .layout {
+    grid-template-columns: minmax(320px, 400px) 1fr;
+  }
+}

@@ -1,0 +1,17 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 576px) {
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,50 +1,55 @@
+import { computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { provideRouter, Router, RouterLink } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { AuthStore } from './core/auth/auth.store';
+import { Role } from './models';
+
+/** AuthStore simulado con el rol indicado. */
+function fakeAuth(role: Role | null) {
+  const profile = signal(role ? { id: '1', email: 'test@gestiondi.test', fullName: 'Prueba', role } : null);
+  return {
+    profile,
+    role: computed(() => profile()?.role ?? null),
+    isAdmin: computed(() => profile()?.role === 'admin'),
+    isAuthenticated: computed(() => profile() !== null),
+    logout: vi.fn().mockResolvedValue(undefined),
+    homeUrl: () => '/',
+  };
+}
+
+async function render(role: Role | null) {
+  await TestBed.configureTestingModule({
+    imports: [AppComponent],
+    providers: [provideRouter([]), { provide: AuthStore, useValue: fakeAuth(role) }],
+  }).compileComponents();
+  const fixture = TestBed.createComponent(AppComponent);
+  fixture.detectChanges();
+  await fixture.whenStable();
+  return fixture.nativeElement as HTMLElement;
+}
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppComponent],
-      providers: [provideRouter([])]
-    }).compileComponents();
+  it('se crea correctamente', async () => {
+    const element = await render(null);
+    expect(element).toBeTruthy();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  it('muestra el Panel de control al administrador', async () => {
+    const element = await render('admin');
+    const labels = Array.from(element.querySelectorAll('#main-menu ion-label')).map((l) => l.innerHTML.replace(/<[^>]*>/g, '').trim());
+    expect(labels).toEqual(['Panel de control', 'Productos', 'Movimientos', 'Ayuda']);
   });
 
-  it('should have menu labels', async () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    // ion-label is a scoped Stencil component whose slot content is relocated
-    // asynchronously, so wait for hydration before reading textContent (ROU-10799).
-    await fixture.whenStable();
-    const app = fixture.nativeElement;
-    const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(12);
-    expect(menuItems[0].innerHTML).toContain('Inbox');
-    expect(menuItems[1].innerHTML).toContain('Outbox');
+  it('oculta el Panel de control al usuario estándar', async () => {
+    const element = await render('user');
+    const labels = Array.from(element.querySelectorAll('#main-menu ion-label')).map((l) => l.innerHTML.replace(/<[^>]*>/g, '').trim());
+    expect(labels).toEqual(['Productos', 'Movimientos', 'Ayuda']);
   });
 
-  it('should have urls', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const app = fixture.nativeElement;
-    expect(app.querySelectorAll('ion-item').length).toEqual(12);
-    // Ionic applies the rendered href through its own async write queue, so
-    // reading the DOM attribute is flaky (FW-6264). Assert the routerLink
-    // binding directly, which resolves synchronously.
-    const router = TestBed.inject(Router);
-    const links = fixture.debugElement
-      .queryAll(By.directive(RouterLink))
-      .map((el) => el.injector.get(RouterLink));
-    expect(links.length).toEqual(6);
-    expect(router.serializeUrl(links[0].urlTree!)).toEqual('/folder/Inbox');
-    expect(router.serializeUrl(links[1].urlTree!)).toEqual('/folder/Outbox');
+  it('incluye el enlace para saltar al contenido', async () => {
+    const element = await render('user');
+    expect(element.querySelector('.skip-link')?.textContent).toContain('Saltar al contenido');
   });
 });

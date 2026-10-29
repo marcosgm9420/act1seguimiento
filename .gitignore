@@ -68,3 +68,13 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Configuración local de Supabase (generada / secreta)
+.env
+.env.*
+!.env.example
+/src/environments/supabase.config.ts
+
+# Documentación generada (se publica desde CI)
+/docs/tecnica
+.vercel

@@ -1,0 +1,124 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Panel de control</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="page">
+    <header class="page-header">
+      <div>
+        <h1>Cuadro de mando</h1>
+        <p>Datos consolidados del inventario, actualizados en tiempo real.</p>
+      </div>
+      <div class="actions" role="group" aria-label="Filtros y exportación">
+        <ion-select
+          class="filter"
+          [(ngModel)]="categoryFilter"
+          label="Categoría"
+          labelPlacement="stacked"
+          fill="outline"
+          interface="popover"
+        >
+          <ion-select-option [value]="0">Todas</ion-select-option>
+          @for (category of categories(); track category.id) {
+            <ion-select-option [value]="category.id">{{ category.name }}</ion-select-option>
+          }
+        </ion-select>
+        <ion-button fill="outline" (click)="exportCsv()" [disabled]="loading()">
+          <ion-icon slot="start" name="grid-outline" aria-hidden="true"></ion-icon>
+          CSV
+        </ion-button>
+        <ion-button fill="outline" (click)="exportPdf()" [disabled]="loading()">
+          <ion-icon slot="start" name="document-text-outline" aria-hidden="true"></ion-icon>
+          Informe PDF
+        </ion-button>
+      </div>
+    </header>
+
+    @if (error(); as message) {
+      <div class="error-box" role="alert">
+        <ion-text color="danger"><p>{{ message }}</p></ion-text>
+        <ion-button size="small" fill="outline" (click)="retry()">
+          <ion-icon slot="start" name="refresh-outline" aria-hidden="true"></ion-icon>
+          Reintentar
+        </ion-button>
+      </div>
+    }
+
+    <section class="kpis" aria-label="Indicadores principales">
+      <app-stat-card label="Productos" [value]="kpis().products" icon="cube-outline" [loading]="loading()"></app-stat-card>
+      <app-stat-card label="Unidades en stock" [value]="kpis().units" icon="layers-outline" color="success" [loading]="loading()"></app-stat-card>
+      <app-stat-card label="Valor del inventario" [value]="kpis().value" icon="cash-outline" color="warning" [loading]="loading()"></app-stat-card>
+      <app-stat-card
+        label="Stock bajo"
+        [value]="kpis().lowStock"
+        icon="alert-circle-outline"
+        color="danger"
+        hint="Pulsa para ver el detalle"
+        [clickable]="true"
+        [loading]="loading()"
+        (selected)="showLowStock()"
+      ></app-stat-card>
+    </section>
+
+    @if (loading()) {
+      <p role="status" class="loading"><ion-spinner aria-hidden="true"></ion-spinner> Cargando datos del cuadro de mando…</p>
+    } @else {
+      <section class="charts" aria-label="Gráficos">
+        <ion-card>
+          <ion-card-content>
+            <app-chart
+              type="bar"
+              title="Unidades en stock por categoría"
+              [labels]="chartLabels()"
+              [series]="unitsSeries()"
+              (pointSelected)="onChartSelect($event)"
+            ></app-chart>
+            <p class="chart-hint">Pulsa una barra para filtrar por esa categoría.</p>
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-content>
+            <app-chart
+              type="doughnut"
+              title="Valor del inventario por categoría (€)"
+              [labels]="chartLabels()"
+              [series]="valueSeries()"
+              (pointSelected)="onChartSelect($event)"
+            ></app-chart>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="wide">
+          <ion-card-content>
+            <app-chart
+              type="line"
+              title="Entradas y salidas de los últimos 7 días (unidades)"
+              [labels]="dayLabels"
+              [series]="movementSeries()"
+            ></app-chart>
+          </ion-card-content>
+        </ion-card>
+      </section>
+    }
+
+    <section id="tabla-stock" class="stock-table" aria-labelledby="stock-title">
+      <div class="table-header">
+        <h2 id="stock-title">{{ onlyLowStock() ? 'Productos con stock bajo' : 'Todos los productos' }}</h2>
+        <ion-button fill="clear" size="small" (click)="onlyLowStock.set(!onlyLowStock())">
+          {{ onlyLowStock() ? 'Ver todos' : 'Ver solo stock bajo' }}
+        </ion-button>
+      </div>
+      <app-data-table
+        [caption]="(onlyLowStock() ? 'Productos con stock bajo' : 'Todos los productos') + ' · ' + categoryName()"
+        [columns]="productColumns"
+        [rows]="tableRows()"
+        [loading]="loading()"
+        [pageSize]="8"
+      ></app-data-table>
+    </section>
+  </main>
+</ion-content>

@@ -1,0 +1,60 @@
+.filter {
+  min-width: 200px;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.charts ion-card {
+  margin: 0;
+}
+
+.chart-hint {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+}
+
+.table-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+@media (min-width: 576px) {
+  .kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .kpis {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .charts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts .wide {
+    grid-column: 1 / -1;
+  }
+}

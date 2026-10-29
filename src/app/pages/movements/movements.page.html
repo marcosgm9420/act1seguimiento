@@ -1,0 +1,152 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Movimientos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="page">
+    <header class="page-header">
+      <div>
+        <h1>Movimientos de stock</h1>
+        <p class="live" [class.on]="live()" role="status">
+          <ion-icon name="radio-outline" aria-hidden="true"></ion-icon>
+          {{ live() ? 'Conectado en tiempo real' : 'Conectando…' }}
+        </p>
+      </div>
+      <div class="actions" role="group" aria-label="Exportar movimientos">
+        <ion-button fill="outline" (click)="exportCsv()" [disabled]="!events().length">
+          <ion-icon slot="start" name="grid-outline" aria-hidden="true"></ion-icon>
+          Exportar CSV
+        </ion-button>
+        <ion-button fill="outline" (click)="exportPdf()" [disabled]="!events().length">
+          <ion-icon slot="start" name="document-text-outline" aria-hidden="true"></ion-icon>
+          Exportar PDF
+        </ion-button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <ion-card class="form-card">
+        <ion-card-header>
+          <ion-card-title><h2>Registrar movimiento</h2></ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <ion-segment formControlName="type" aria-label="Tipo de movimiento">
+              <ion-segment-button value="entrada"><ion-label>Entrada</ion-label></ion-segment-button>
+              <ion-segment-button value="salida"><ion-label>Salida</ion-label></ion-segment-button>
+              <ion-segment-button value="nota"><ion-label>Nota</ion-label></ion-segment-button>
+            </ion-segment>
+
+            @if (!isNote()) {
+              <ion-select
+                formControlName="sku"
+                label="Producto"
+                labelPlacement="floating"
+                fill="outline"
+                interface="popover"
+                placeholder="Selecciona un producto"
+                [required]="true"
+                errorText="Selecciona un producto."
+              >
+                @for (product of products(); track product.id) {
+                  <ion-select-option [value]="product.sku">
+                    {{ product.sku }} · {{ product.name }} (stock {{ product.stock }})
+                  </ion-select-option>
+                }
+              </ion-select>
+
+              <ion-input
+                formControlName="quantity"
+                type="number"
+                inputmode="numeric"
+                label="Cantidad"
+                labelPlacement="floating"
+                fill="outline"
+                min="1"
+                step="1"
+                [required]="true"
+                errorText="Introduce un número entero mayor que 0."
+              ></ion-input>
+            }
+
+            <ion-textarea
+              formControlName="comment"
+              [label]="isNote() ? 'Nota' : 'Comentario (opcional)'"
+              labelPlacement="floating"
+              fill="outline"
+              [autoGrow]="true"
+              [counter]="true"
+              [maxlength]="200"
+              [errorText]="isNote() ? 'Escribe el texto de la nota.' : 'Máximo 200 caracteres.'"
+            ></ion-textarea>
+
+            <div aria-live="assertive">
+              @if (errorMessage(); as message) {
+                <ion-text color="danger"><p class="form-error" role="alert">{{ message }}</p></ion-text>
+              }
+            </div>
+
+            <ion-button type="submit" expand="block" [disabled]="saving()">
+              @if (saving()) {
+                <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+                <span class="ion-padding-start">Guardando…</span>
+              } @else {
+                Registrar
+              }
+            </ion-button>
+          </form>
+        </ion-card-content>
+      </ion-card>
+
+      <section class="feed" aria-labelledby="feed-title">
+        <h2 id="feed-title">Últimos movimientos</h2>
+        @if (loading()) {
+          <p role="status" class="loading"><ion-spinner aria-hidden="true"></ion-spinner> Cargando movimientos…</p>
+        } @else {
+          <ion-list aria-live="polite" aria-relevant="additions">
+            @for (event of events(); track event.id) {
+              <ion-item>
+                <ion-icon
+                  slot="start"
+                  [name]="icon(event.doc.type)"
+                  [class]="'type-' + event.doc.type"
+                  aria-hidden="true"
+                ></ion-icon>
+                <ion-label class="ion-text-wrap">
+                  <h3>
+                    {{ typeLabel[event.doc.type] }}
+                    @if (event.doc.sku) {
+                      · {{ event.doc.quantity }} × {{ productName()(event.doc.sku) }}
+                    }
+                  </h3>
+                  @if (event.doc.comment) {
+                    <p>{{ event.doc.comment }}</p>
+                  }
+                  <ion-note>{{ event.doc.author }} · {{ formatDateTime(event.createdAt) }}</ion-note>
+                </ion-label>
+                @if (auth.isAdmin()) {
+                  <ion-button
+                    slot="end"
+                    fill="clear"
+                    color="danger"
+                    (click)="remove(event)"
+                    [attr.aria-label]="'Eliminar movimiento del ' + formatDateTime(event.createdAt)"
+                  >
+                    <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+                  </ion-button>
+                }
+              </ion-item>
+            } @empty {
+              <ion-item><ion-label>Todavía no hay movimientos registrados.</ion-label></ion-item>
+            }
+          </ion-list>
+        }
+      </section>
+    </div>
+  </main>
+</ion-content>

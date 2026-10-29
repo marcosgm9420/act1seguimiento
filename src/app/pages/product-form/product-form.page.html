@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/productos" text="Productos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit() ? 'Editar producto' : 'Nuevo producto' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="page narrow">
+    <h1>{{ isEdit() ? 'Editar producto' : 'Alta de producto' }}</h1>
+
+    @if (loading()) {
+      <p role="status" class="loading"><ion-spinner aria-hidden="true"></ion-spinner> Cargando datos…</p>
+    } @else {
+      <ion-card>
+        <ion-card-content>
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div>
+              <ion-input
+                formControlName="sku"
+                label="SKU (código)"
+                labelPlacement="floating"
+                fill="outline"
+                [required]="true"
+                [maxlength]="9"
+                (ionInput)="upperSku()"
+                helperText="Ejemplo: ELE-001"
+                [errorText]="skuError()"
+                aria-describedby="sku-status"
+              ></ion-input>
+              <ion-note id="sku-status" class="async-status" aria-live="polite">
+                @if (skuStatus() === 'PENDING') {
+                  <ion-spinner name="dots" aria-hidden="true"></ion-spinner> Comprobando SKU…
+                } @else if (skuStatus() === 'VALID' && form.controls.sku.dirty) {
+                  <span class="ok">✓ SKU disponible</span>
+                }
+              </ion-note>
+            </div>
+
+            <ion-input
+              formControlName="name"
+              label="Nombre del producto"
+              labelPlacement="floating"
+              fill="outline"
+              [required]="true"
+              [counter]="true"
+              [maxlength]="80"
+              errorText="El nombre debe tener entre 2 y 80 caracteres."
+            ></ion-input>
+
+            <ion-select
+              formControlName="categoryId"
+              label="Categoría"
+              labelPlacement="floating"
+              fill="outline"
+              interface="popover"
+              placeholder="Elige una categoría"
+              [required]="true"
+              errorText="Selecciona una categoría."
+            >
+              @for (category of categories(); track category.id) {
+                <ion-select-option [value]="category.id">{{ category.name }}</ion-select-option>
+              }
+            </ion-select>
+
+            <div class="grid-3">
+              <ion-input
+                formControlName="stock"
+                type="number"
+                inputmode="numeric"
+                label="Stock actual"
+                labelPlacement="floating"
+                fill="outline"
+                min="0"
+                step="1"
+                [required]="true"
+                errorText="Número entero mayor o igual que 0."
+              ></ion-input>
+              <ion-input
+                formControlName="minStock"
+                type="number"
+                inputmode="numeric"
+                label="Stock mínimo"
+                labelPlacement="floating"
+                fill="outline"
+                min="0"
+                step="1"
+                [required]="true"
+                errorText="Número entero mayor o igual que 0."
+              ></ion-input>
+              <ion-input
+                formControlName="price"
+                type="number"
+                inputmode="decimal"
+                label="Precio (€)"
+                labelPlacement="floating"
+                fill="outline"
+                min="0"
+                step="0.01"
+                [required]="true"
+                errorText="Precio mayor o igual que 0."
+              ></ion-input>
+            </div>
+
+            <div aria-live="assertive">
+              @if (errorMessage(); as message) {
+                <ion-text color="danger"><p class="form-error" role="alert">{{ message }}</p></ion-text>
+              }
+            </div>
+
+            <ion-button type="submit" expand="block" [disabled]="saving()">
+              @if (saving()) {
+                <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+                <span class="ion-padding-start">Guardando…</span>
+              } @else {
+                {{ isEdit() ? 'Guardar cambios' : 'Crear producto' }}
+              }
+            </ion-button>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    }
+  </main>
+</ion-content>

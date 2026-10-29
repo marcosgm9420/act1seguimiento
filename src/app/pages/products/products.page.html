@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Productos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content pullingText="Desliza para actualizar" refreshingText="Actualizando…"></ion-refresher-content>
+  </ion-refresher>
+
+  <main class="page">
+    <header class="page-header">
+      <div>
+        <h1>Inventario</h1>
+        <p>
+          {{ products().length }} productos ·
+          <strong [class.danger]="lowStockCount() > 0">{{ lowStockCount() }} con stock bajo</strong>
+        </p>
+      </div>
+      <div class="actions" role="group" aria-label="Acciones del inventario">
+        <ion-button fill="outline" (click)="exportCsv()" [disabled]="loading() || !visible().length">
+          <ion-icon slot="start" name="grid-outline" aria-hidden="true"></ion-icon>
+          Exportar CSV
+        </ion-button>
+        <ion-button fill="outline" (click)="exportPdf()" [disabled]="loading() || !visible().length">
+          <ion-icon slot="start" name="document-text-outline" aria-hidden="true"></ion-icon>
+          Exportar PDF
+        </ion-button>
+        @if (auth.isAdmin()) {
+          <ion-button routerLink="/productos/nuevo">
+            <ion-icon slot="start" name="add-outline" aria-hidden="true"></ion-icon>
+            Nuevo producto
+          </ion-button>
+        }
+      </div>
+    </header>
+
+    @if (error(); as message) {
+      <div class="error-box" role="alert">
+        <ion-text color="danger"><p>{{ message }}</p></ion-text>
+        <ion-button size="small" fill="outline" (click)="load()">
+          <ion-icon slot="start" name="refresh-outline" aria-hidden="true"></ion-icon>
+          Reintentar
+        </ion-button>
+      </div>
+    }
+
+    <app-data-table
+      caption="Listado de productos del inventario"
+      [columns]="columns"
+      [rows]="products()"
+      [loading]="loading()"
+      [editable]="auth.isAdmin()"
+      [highlight]="isLowStock"
+      highlightLabel="Stock bajo"
+      rowLabelKey="name"
+      [(search)]="search"
+      (filteredChange)="visible.set($event)"
+      (action)="onAction($event)"
+    ></app-data-table>
+  </main>
+</ion-content>
