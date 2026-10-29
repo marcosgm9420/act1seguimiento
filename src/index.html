@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="utf-8" />
-  <title>Ionic App</title>
+  <title>Gestión DI · Inventario</title>
+  <meta name="description" content="Gestión DI: sistema de gestión de inventario multiplataforma con control de acceso por roles, cuadro de mando e informes." />
 
   <base href="/" />
 
   <meta name="color-scheme" content="light dark" />
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!-- Sin user-scalable=no ni maximum-scale: el usuario debe poder ampliar (WCAG 1.4.4) -->
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0" />
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
+  <meta name="theme-color" content="#114ca8" />
 
   <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/icon/icon-192.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
 
   <!-- add to homescreen for ios -->
   <meta name="mobile-web-app-capable" content="yes" />
@@ -21,6 +26,7 @@
 
 <body>
   <app-root></app-root>
+  <noscript>Gestión DI necesita JavaScript para funcionar. Actívalo en tu navegador.</noscript>
 </body>
 
 </html>

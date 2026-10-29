@@ -1,2 +1,66 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+
+// Colores con contraste AA (≥ 4.5:1) para texto sobre blanco y texto blanco sobre el color.
+:root {
+  --ion-color-primary: #114ca8;
+  --ion-color-primary-rgb: 17, 76, 168;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #0f4394;
+  --ion-color-primary-tint: #295eb1;
+
+  --ion-color-success: #1b7a3a;
+  --ion-color-success-rgb: 27, 122, 58;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #186b33;
+  --ion-color-success-tint: #32874e;
+
+  --ion-color-danger: #b3261e;
+  --ion-color-danger-rgb: 179, 38, 30;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #9e211a;
+  --ion-color-danger-tint: #bb3c35;
+
+  --ion-color-medium: #5c6370;
+  --ion-color-medium-rgb: 92, 99, 112;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #515763;
+  --ion-color-medium-tint: #6c737e;
+}
+
+// En modo oscuro se aclaran los colores para mantener el contraste sobre fondo negro.
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-color-primary: #6ea8ff;
+    --ion-color-primary-rgb: 110, 168, 255;
+    --ion-color-primary-contrast: #000000;
+    --ion-color-primary-contrast-rgb: 0, 0, 0;
+    --ion-color-primary-shade: #8cbaff;
+    --ion-color-primary-tint: #7db1ff;
+
+    --ion-color-success: #5fd68a;
+    --ion-color-success-rgb: 95, 214, 138;
+    --ion-color-success-contrast: #000000;
+    --ion-color-success-contrast-rgb: 0, 0, 0;
+    --ion-color-success-shade: #7fe0a2;
+    --ion-color-success-tint: #6fda96;
+
+    --ion-color-danger: #ff8a80;
+    --ion-color-danger-rgb: 255, 138, 128;
+    --ion-color-danger-contrast: #000000;
+    --ion-color-danger-contrast-rgb: 0, 0, 0;
+    --ion-color-danger-shade: #ffa199;
+    --ion-color-danger-tint: #ff968d;
+
+    --ion-color-medium: #a7adb8;
+    --ion-color-medium-rgb: 167, 173, 184;
+    --ion-color-medium-contrast: #000000;
+    --ion-color-medium-contrast-rgb: 0, 0, 0;
+    --ion-color-medium-shade: #b8bdc6;
+    --ion-color-medium-tint: #b0b5bf;
+  }
+}
