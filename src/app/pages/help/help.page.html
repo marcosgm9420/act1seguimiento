@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      @if (auth.isAuthenticated()) {
+        <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+      } @else {
+        <ion-back-button defaultHref="/login" text="Volver"></ion-back-button>
+      }
+    </ion-buttons>
+    <ion-title>Ayuda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="page narrow">
+    <h1>Manual de usuario</h1>
+    <p>
+      Gestión DI es una aplicación para controlar el inventario de un almacén: productos, stock y movimientos.
+      Pulsa cada apartado para desplegarlo.
+    </p>
+
+    <ion-accordion-group [multiple]="true">
+      @for (section of sections; track section.id) {
+        <ion-accordion [value]="section.id">
+          <ion-item slot="header">
+            <ion-label>
+              <h2>{{ section.title }}</h2>
+              @if (section.adminOnly) {
+                <p>Solo administrador</p>
+              }
+            </ion-label>
+          </ion-item>
+          <div class="section" slot="content">
+            @for (paragraph of section.paragraphs; track $index) {
+              <p>{{ paragraph }}</p>
+            }
+            @if (section.steps) {
+              <ol>
+                @for (step of section.steps; track $index) {
+                  <li>{{ step }}</li>
+                }
+              </ol>
+            }
+          </div>
+        </ion-accordion>
+      }
+    </ion-accordion-group>
+
+    @if (!auth.isAuthenticated()) {
+      <p class="back"><a routerLink="/login">Volver a iniciar sesión</a></p>
+    }
+  </main>
+</ion-content>

@@ -35,3 +35,145 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* ---------------------------------------------------------------------------
+ * Accesibilidad (WCAG 2.1 AA)
+ * ------------------------------------------------------------------------- */
+
+/* Tipografía escalable: todo en rem, respeta el tamaño de letra del usuario. */
+html {
+  font-size: 100%;
+}
+
+/* Foco visible para la navegación con teclado. */
+:focus-visible {
+  outline: 3px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}
+
+ion-item.ion-focused,
+ion-button.ion-focused {
+  outline: 3px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}
+
+/* Enlace "Saltar al contenido": solo visible al recibir el foco. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 8px;
+  z-index: 10000;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background: #0b3d91;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+/* Contenido solo para lectores de pantalla. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Maquetación común (mobile-first)
+ * ------------------------------------------------------------------------- */
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.page.narrow {
+  max-width: 760px;
+}
+
+.page h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.page-header p {
+  margin: 0;
+}
+
+.page-header .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  border: 1px solid var(--ion-color-danger);
+  border-radius: 8px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-error {
+  margin: 0;
+  font-weight: 500;
+}
+
+.async-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 1.25rem;
+  padding: 2px 16px 0;
+  font-size: 0.8125rem;
+}
+
+.async-status .ok {
+  color: var(--ion-color-success-shade);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
