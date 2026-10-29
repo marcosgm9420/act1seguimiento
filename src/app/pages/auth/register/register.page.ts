@@ -1,17 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonInputPasswordToggle, IonButton, IonSpinner,
   IonText, IonCard, IonCardContent, IonButtons, IonBackButton, IonNote,
 } from '@ionic/angular';
-import { map } from 'rxjs';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { InventoryApiService } from '../../../core/services/inventory-api.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import {
-  matchFieldsValidator, strongPasswordValidator, uniqueValueValidator,
+  controlStatus, matchFieldsValidator, strongPasswordValidator, uniqueValueValidator,
 } from '../../../core/validators/form-validators';
 
 /**
@@ -52,10 +50,7 @@ export class RegisterPage {
   );
 
   /** Estado de la validación asíncrona del correo (PENDING mientras consulta). */
-  protected readonly emailStatus = toSignal(
-    this.form.controls.email.statusChanges.pipe(map(() => this.form.controls.email.status)),
-    { initialValue: this.form.controls.email.status },
-  );
+  protected readonly emailStatus = controlStatus(this.form.controls.email);
 
   protected readonly loading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
