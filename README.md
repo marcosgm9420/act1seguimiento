@@ -4,8 +4,8 @@ Aplicación híbrida/PWA de gestión de inventario hecha con **Ionic 9 + Angular
 
 Es el proyecto individual del módulo **Desarrollo de Interfaces (0488)**, del CFGS en Desarrollo de Aplicaciones Multiplataforma.
 
-- 📱 **Aplicación en producción:** `https://<tu-proyecto>.vercel.app` *(rellenar tras el despliegue)*
-- 📚 **Documentación técnica (Compodoc):** `https://<tu-proyecto>.vercel.app/docs/`
+- 📱 **Aplicación en producción:** https://gestion-di-inventario.vercel.app
+- 📚 **Documentación técnica (Compodoc):** https://gestion-di-inventario.vercel.app/docs/
 - 📖 **Manual de usuario:** [docs/MANUAL_USUARIO.md](docs/MANUAL_USUARIO.md), también integrado en la app (menú **Ayuda**)
 
 ---
