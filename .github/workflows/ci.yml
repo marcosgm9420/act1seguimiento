@@ -1,0 +1,51 @@
+# Integración continua: lint, tests unitarios, build de producción y documentación.
+# Se ejecuta en cada push y en cada Pull Request hacia main y develop.
+# Vercel despliega desde GitHub y su build (`npm run vercel-build`) también
+# ejecuta los tests: si fallan, no se publica la nueva versión.
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad:
+    name: Lint, tests y build
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests unitarios
+        run: npm run test:ci
+
+      - name: Build de producción
+        run: npm run build
+
+      - name: Documentación técnica (Compodoc)
+        run: npm run docs
+
+      - name: Publicar documentación como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentacion-tecnica
+          path: docs/tecnica

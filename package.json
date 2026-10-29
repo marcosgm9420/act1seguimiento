@@ -15,7 +15,9 @@
     "lint": "ng lint",
     "docs": "compodoc -p tsconfig.doc.json -d docs/tecnica -n \"Gestión DI - Documentación técnica\" --language es-ES --hideGenerator",
     "docs:serve": "compodoc -p tsconfig.doc.json -s",
-    "vercel-build": "npm run test:ci && npm run build"
+    "vercel-build": "npm run test:ci && npm run build && npm run docs:www",
+    "docs:www": "compodoc -p tsconfig.doc.json -d www/docs -n \"Gestión DI - Documentación técnica\" --language es-ES --hideGenerator",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "private": true,
   "dependencies": {
@@ -25,6 +27,7 @@
     "@angular/forms": "22.2.3",
     "@angular/platform-browser": "22.2.3",
     "@angular/router": "22.2.3",
+    "@angular/service-worker": "^22.2.3",
     "@capacitor/app": "8.1.2",
     "@capacitor/core": "8.5.3",
     "@capacitor/haptics": "8.0.2",
