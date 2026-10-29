@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login" text="Volver"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gestión DI</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="auth-wrapper">
+    <ion-card class="auth-card">
+      <ion-card-content>
+        <h1>Crear cuenta</h1>
+
+        @if (confirmationSent()) {
+          <div role="status">
+            <p>Te hemos enviado un correo de confirmación. Ábrelo y después inicia sesión.</p>
+            <ion-button expand="block" routerLink="/login">Ir a iniciar sesión</ion-button>
+          </div>
+        } @else {
+          <p class="subtitle">Las cuentas nuevas tienen el rol de usuario estándar.</p>
+
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <ion-input
+              formControlName="fullName"
+              label="Nombre completo"
+              labelPlacement="floating"
+              fill="outline"
+              autocomplete="name"
+              [required]="true"
+              [counter]="true"
+              [maxlength]="60"
+              errorText="Escribe tu nombre (entre 3 y 60 caracteres)."
+            ></ion-input>
+
+            <div>
+              <ion-input
+                formControlName="email"
+                type="email"
+                label="Correo electrónico"
+                labelPlacement="floating"
+                fill="outline"
+                autocomplete="email"
+                inputmode="email"
+                [required]="true"
+                [errorText]="emailError()"
+                helperText="Comprobaremos que no esté ya registrado."
+                aria-describedby="email-status"
+              ></ion-input>
+              <ion-note id="email-status" class="async-status" aria-live="polite">
+                @if (emailStatus() === 'PENDING') {
+                  <ion-spinner name="dots" aria-hidden="true"></ion-spinner> Comprobando disponibilidad…
+                } @else if (emailStatus() === 'VALID') {
+                  <span class="ok">✓ Correo disponible</span>
+                }
+              </ion-note>
+            </div>
+
+            <ion-input
+              formControlName="password"
+              type="password"
+              label="Contraseña"
+              labelPlacement="floating"
+              fill="outline"
+              autocomplete="new-password"
+              [required]="true"
+              helperText="Mínimo 8 caracteres, con letras y números."
+              errorText="Mínimo 8 caracteres, con al menos una letra y un número."
+            >
+              <ion-input-password-toggle slot="end" showLabel="Mostrar contraseña" hideLabel="Ocultar contraseña"></ion-input-password-toggle>
+            </ion-input>
+
+            <ion-input
+              formControlName="confirmPassword"
+              type="password"
+              label="Repite la contraseña"
+              labelPlacement="floating"
+              fill="outline"
+              autocomplete="new-password"
+              [required]="true"
+              [class.ion-invalid]="form.hasError('fieldsMismatch') && form.controls.confirmPassword.touched"
+              [errorText]="form.hasError('fieldsMismatch') ? 'Las contraseñas no coinciden.' : 'Repite la contraseña.'"
+            ></ion-input>
+
+            <div aria-live="assertive">
+              @if (errorMessage(); as message) {
+                <ion-text color="danger"><p class="form-error" role="alert">{{ message }}</p></ion-text>
+              }
+            </div>
+
+            <ion-button type="submit" expand="block" [disabled]="loading()">
+              @if (loading()) {
+                <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+                <span class="ion-padding-start">Creando cuenta…</span>
+              } @else {
+                Crear cuenta
+              }
+            </ion-button>
+          </form>
+
+          <p class="auth-switch">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+        }
+      </ion-card-content>
+    </ion-card>
+  </main>
+</ion-content>
