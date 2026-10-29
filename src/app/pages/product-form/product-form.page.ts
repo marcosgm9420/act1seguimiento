@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -9,7 +9,7 @@ import {
 import { forkJoin, map, of } from 'rxjs';
 import { InventoryApiService } from '../../core/services/inventory-api.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { uniqueValueValidator } from '../../core/validators/form-validators';
+import { controlStatus, uniqueValueValidator } from '../../core/validators/form-validators';
 import { Category, ProductInput } from '../../models';
 
 /** Formato de SKU: tres letras, guion y de 3 a 5 dígitos (ej. ELE-001). */
@@ -55,9 +55,7 @@ export class ProductFormPage implements OnInit {
     price: [0, [Validators.required, Validators.min(0)]],
   });
 
-  protected readonly skuStatus = toSignal(this.form.controls.sku.statusChanges, {
-    initialValue: this.form.controls.sku.status,
-  });
+  protected readonly skuStatus = controlStatus(this.form.controls.sku);
 
   protected readonly categories = signal<Category[]>([]);
   protected readonly loading = signal(true);
