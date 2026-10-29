@@ -78,3 +78,4 @@ Thumbs.db
 # Documentación generada (se publica desde CI)
 /docs/tecnica
 .vercel
+.claude/

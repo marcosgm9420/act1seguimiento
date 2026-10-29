@@ -37,8 +37,11 @@ ion-menu ion-item.selected ion-icon {
   display: flex;
   align-items: center;
   gap: 8px;
-  position: relative;
-  z-index: 20;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
   padding: 8px 16px;
   background: #fff4ce;
   color: #4a3500;
