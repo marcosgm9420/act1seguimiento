@@ -1,0 +1,133 @@
+:host {
+  display: block;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+ion-searchbar {
+  flex: 1 1 260px;
+  padding: 0;
+}
+
+.count {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Móvil: cada fila es una tarjeta */
+thead {
+  display: none;
+}
+
+tr {
+  display: block;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--ion-color-step-200, #ccc);
+  border-radius: 8px;
+}
+
+td {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+td::before {
+  content: attr(data-label);
+  font-weight: 600;
+}
+
+td.empty::before {
+  content: none;
+}
+
+tr.highlight {
+  border-left: 4px solid var(--ion-color-danger);
+}
+
+.badge {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--ion-color-danger);
+  color: var(--ion-color-danger-contrast);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Tablet y escritorio: tabla clásica */
+@media (min-width: 768px) {
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    display: table-row;
+    border: 0;
+    border-bottom: 1px solid var(--ion-color-step-150, #d9d9d9);
+  }
+
+  td,
+  th {
+    display: table-cell;
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    font-weight: 600;
+    background: var(--ion-color-step-50, #f2f2f2);
+  }
+
+  td::before {
+    content: none;
+  }
+
+  .end {
+    text-align: right;
+  }
+
+  tr.highlight {
+    border-left: 0;
+    background: rgba(var(--ion-color-danger-rgb), 0.07);
+  }
+}

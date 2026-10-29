@@ -1,0 +1,106 @@
+<div class="toolbar">
+  <ion-searchbar
+    [value]="search()"
+    (ionInput)="onSearch($event.detail.value)"
+    [debounce]="200"
+    placeholder="Buscar…"
+    [attr.aria-label]="'Buscar en ' + caption()"
+    showClearButton="focus"
+  ></ion-searchbar>
+  <p class="count" role="status" aria-live="polite">
+    {{ filtered().length }} {{ filtered().length === 1 ? 'resultado' : 'resultados' }}
+  </p>
+</div>
+
+<div class="table-wrapper">
+  <table>
+    <caption class="sr-only">{{ caption() }}</caption>
+    <thead>
+      <tr>
+        @for (column of columns(); track column.key) {
+          <th scope="col" [class.end]="column.align === 'end'" [attr.aria-sort]="ariaSort(column)">
+            @if (column.sortable !== false) {
+              <button type="button" class="sort" (click)="toggleSort(column)">
+                {{ column.label }}
+                @if (sortKey() === column.key) {
+                  <ion-icon [name]="sortDir() === 'asc' ? 'arrow-up' : 'arrow-down'" aria-hidden="true"></ion-icon>
+                }
+              </button>
+            } @else {
+              {{ column.label }}
+            }
+          </th>
+        }
+        @if (editable()) {
+          <th scope="col" class="end">Acciones</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @if (loading()) {
+        @for (n of skeletonRows; track n) {
+          <tr aria-hidden="true">
+            @for (column of columns(); track column.key) {
+              <td><ion-skeleton-text [animated]="true"></ion-skeleton-text></td>
+            }
+            @if (editable()) {
+              <td><ion-skeleton-text [animated]="true"></ion-skeleton-text></td>
+            }
+          </tr>
+        }
+      } @else {
+        @for (row of visibleRows(); track row.id) {
+          <tr [class.highlight]="highlight()(row)">
+            @for (column of columns(); track column.key; let first = $first) {
+              <td [attr.data-label]="column.label" [class.end]="column.align === 'end'">
+                {{ text(column, row) }}
+                @if (first && highlight()(row)) {
+                  <span class="badge">{{ highlightLabel() }}</span>
+                }
+              </td>
+            }
+            @if (editable()) {
+              <td class="end actions" data-label="Acciones">
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  (click)="emit('edit', row)"
+                  [attr.aria-label]="'Editar ' + rowLabel(row)"
+                >
+                  <ion-icon slot="icon-only" name="create-outline" aria-hidden="true"></ion-icon>
+                </ion-button>
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  color="danger"
+                  (click)="emit('delete', row)"
+                  [attr.aria-label]="'Eliminar ' + rowLabel(row)"
+                >
+                  <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+                </ion-button>
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty" [attr.colspan]="columns().length + (editable() ? 1 : 0)">
+              No hay resultados{{ search() ? ' para «' + search() + '»' : '' }}.
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (pageCount() > 1) {
+  <nav class="pager" [attr.aria-label]="'Paginación de ' + caption()">
+    <ion-button fill="outline" size="small" (click)="goTo(currentPage() - 1)" [disabled]="currentPage() === 0" aria-label="Página anterior">
+      <ion-icon slot="icon-only" name="chevron-back" aria-hidden="true"></ion-icon>
+    </ion-button>
+    <span aria-live="polite">Página {{ currentPage() + 1 }} de {{ pageCount() }}</span>
+    <ion-button fill="outline" size="small" (click)="goTo(currentPage() + 1)" [disabled]="currentPage() >= pageCount() - 1" aria-label="Página siguiente">
+      <ion-icon slot="icon-only" name="chevron-forward" aria-hidden="true"></ion-icon>
+    </ion-button>
+  </nav>
+}

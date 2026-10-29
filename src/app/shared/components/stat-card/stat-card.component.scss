@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  border: 1px solid var(--ion-color-step-150, #d9d9d9);
+  border-radius: 12px;
+  background: var(--ion-card-background, var(--ion-background-color, #fff));
+  color: var(--ion-text-color);
+  font: inherit;
+  text-align: left;
+}
+
+button.card {
+  cursor: pointer;
+}
+
+button.card:hover {
+  border-color: var(--accent);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.value {
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.value-skeleton {
+  width: 80px;
+  height: 1.6rem;
+}
+
+.hint {
+  font-size: 0.8125rem;
+}
+
+.primary {
+  --accent: var(--ion-color-primary-shade);
+}
+
+.success {
+  --accent: #1b6e34;
+}
+
+.warning {
+  --accent: #8a5300;
+}
+
+.danger {
+  --accent: #b3261e;
+}
