@@ -1,0 +1,7 @@
+{
+  "name": "gestion-di",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
